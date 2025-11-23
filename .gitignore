@@ -1,3 +1,9 @@
+# Custom
+
+NVIDIA-OptiX-SDK*
+
+# Cmake
+
 CMakeLists.txt.user
 CMakeCache.txt
 CMakeFiles

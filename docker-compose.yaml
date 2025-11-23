@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+  chrono_gui:
+    image: chrono:latest
+    container_name: chrono_gui
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    environment:
+      - DISPLAY=${DISPLAY}
+      - XDG_RUNTIME_DIR=/tmp/runtime-root
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - /usr/share/vulkan/icd.d:/usr/share/vulkan/icd.d:ro
+      - /usr/lib/nvidia:/usr/lib/nvidia:ro
+    stdin_open: true
+    tty: true
