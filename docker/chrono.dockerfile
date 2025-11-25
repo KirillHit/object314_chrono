@@ -125,7 +125,4 @@ RUN . /opt/ros/${ROS_DISTRO}/setup.sh && \
 
 RUN ninja -j8 && ninja install
 
-ENV LD_LIBRARY_PATH=/opt/vsg/lib:$LD_LIBRARY_PATH
-RUN apt install -y vulkan-tools
-
 CMD ["/bin/bash"]

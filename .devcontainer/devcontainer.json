@@ -1,0 +1,16 @@
+{
+    "name": "C++ Dev Container",
+    "build": {
+        "dockerfile": "docker/tracked_sim.dockerfile",
+        "context": "${workspaceFolder}"
+    },
+    "settings": {
+        "C_Cpp.default.configurationProvider": "ms-vscode.cpptools"
+    },
+    "extensions": [
+        "ms-vscode.cpptools",
+        "ms-vscode.cmake-tools"
+    ],
+    "workspaceFolder": "/workspace",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind"
+}
