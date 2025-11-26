@@ -78,16 +78,19 @@ RUN git submodule update --init --recursive
 # ----------------- Build VSG -----------------
 WORKDIR /opt/chrono/contrib/build-scripts/linux
 RUN chmod +x buildVSG.sh && ./buildVSG.sh /opt/vsg
+RUN apt install -y vulkan-tools
 
 ENV VSG_INSTALL_DIR=/opt/vsg
 ENV CMAKE_PREFIX_PATH=$VSG_INSTALL_DIR:$CMAKE_PREFIX_PATH
+ENV LD_LIBRARY_PATH=/opt/vsg/lib:$LD_LIBRARY_PATH
+
+# ----------------- Build Chrono -----------------
 
 WORKDIR /opt/chrono/build
 RUN . /opt/ros/${ROS_DISTRO}/setup.sh && \
     . ${ROS2_WS_INSTALL}/setup.sh && \
     cmake .. \
         -G Ninja \
-        -DCMAKE_INSTALL_PREFIX=/opt/chrono/install \
         -DCH_ENABLE_MODULE_IRRLICHT:BOOL=ON \
         -DCH_ENABLE_MODULE_VSG:BOOL=ON \
         -DCH_ENABLE_MODULE_VEHICLE:BOOL=ON \

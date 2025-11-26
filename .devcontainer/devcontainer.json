@@ -1,15 +1,17 @@
 {
     "name": "C++ Dev Container",
     "build": {
-        "dockerfile": "docker/tracked_sim.dockerfile",
-        "context": "${workspaceFolder}"
+        "dockerfile": "../docker/tracked_sim.dockerfile",
+        "context": "../docker"
     },
     "settings": {
         "C_Cpp.default.configurationProvider": "ms-vscode.cpptools"
     },
     "extensions": [
         "ms-vscode.cpptools",
-        "ms-vscode.cmake-tools"
+        "ms-vscode.cmake-tools",
+        "twxs.cmake",
+        "xaver.clang-format"
     ],
     "workspaceFolder": "/workspace",
     "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind"
