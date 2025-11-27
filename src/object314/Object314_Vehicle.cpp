@@ -9,8 +9,8 @@
 #include "chrono_vehicle/ChVehicleDataPath.h"
 
 #include "Object314_Chassis.hpp"
-#include "chrono_models/vehicle/Object314/Object314_SimpleDriveline.h"
-#include "chrono_models/vehicle/Object314/Object314_TrackAssemblySinglePin.h"
+#include "Object314_SimpleDriveline.hpp"
+#include "track_assembly/Object314_TrackAssemblySinglePin.hpp"
 
 namespace chrono {
 namespace vehicle {

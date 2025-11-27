@@ -70,7 +70,7 @@ Object314_Chassis::Object314_Chassis(const std::string& name, bool fixed, Collis
     m_geometry.vis_boxes.push_back(box1);
     m_geometry.vis_boxes.push_back(box2);
 
-    m_geometry.vis_model_file = GetVehicleDataFile("object314/Hull.stl");
+    m_geometry.vis_model_file = GetVehicleDataFile("object314/Hull.obj");
 
     switch (chassis_collision_type) {
         case CollisionType::PRIMITIVES:
@@ -80,7 +80,7 @@ Object314_Chassis::Object314_Chassis(const std::string& name, bool fixed, Collis
             m_geometry.coll_boxes.push_back(box2);
             break;
         case CollisionType::HULLS: {
-            utils::ChBodyGeometry::ConvexHullsShape hull(GetVehicleDataFile("object314/Hull.stl"), 0);
+            utils::ChBodyGeometry::ConvexHullsShape hull(GetVehicleDataFile("object314/Hull.obj"), 0);
             m_geometry.coll_hulls.push_back(hull);
             break;
         }

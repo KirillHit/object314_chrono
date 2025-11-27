@@ -2,7 +2,10 @@
     "name": "C++ Dev Container",
     "build": {
         "dockerfile": "../docker/tracked_sim.dockerfile",
-        "context": "../docker"
+        "context": "../docker",
+        "args": {
+            "USERNAME": "${localEnv:USER}"
+        }
     },
     "settings": {
         "C_Cpp.default.configurationProvider": "ms-vscode.cpptools"
@@ -13,6 +16,7 @@
         "twxs.cmake",
         "xaver.clang-format"
     ],
-    "workspaceFolder": "/workspace",
-    "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind"
+    "workspaceFolder": "/home/${localEnv:USER}/tracked_vehicle_sim",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/home/${localEnv:USER}/tracked_vehicle_sim,type=bind",
+    "remoteUser": "${localEnv:USER}"
 }

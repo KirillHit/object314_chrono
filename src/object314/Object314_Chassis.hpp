@@ -1,7 +1,7 @@
 // Object314 chassis subsystem.
 
-#ifndef Object314_CHASSIS_H
-#define Object314_CHASSIS_H
+#ifndef Object314_CHASSIS_HPP
+#define Object314_CHASSIS_HPP
 
 #include <string>
 
