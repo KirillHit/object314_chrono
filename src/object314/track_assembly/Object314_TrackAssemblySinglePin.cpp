@@ -1,15 +1,15 @@
 // Object314 single-pin track assembly subsystem.
 
 #include "Object314_TrackAssemblySinglePin.hpp"
-#include "chrono_models/vehicle/Object314/Object314_BrakeShafts.h"
-#include "chrono_models/vehicle/Object314/Object314_BrakeSimple.h"
-#include "chrono_models/vehicle/Object314/Object314_Idler.h"
-#include "chrono_models/vehicle/Object314/Object314_IdlerWheel.h"
-#include "chrono_models/vehicle/Object314/Object314_RoadWheel.h"
-#include "chrono_models/vehicle/Object314/Object314_SprocketSinglePin.h"
-#include "chrono_models/vehicle/Object314/Object314_SupportRoller.h"
-#include "chrono_models/vehicle/Object314/Object314_Suspension.h"
-#include "chrono_models/vehicle/Object314/Object314_TrackShoeSinglePin.h"
+#include "Object314_BrakeShafts.hpp"
+#include "Object314_BrakeSimple.hpp"
+#include "Object314_Idler.hpp"
+#include "Object314_IdlerWheel.hpp"
+#include "Object314_RoadWheel.hpp"
+#include "Object314_SprocketSinglePin.hpp"
+#include "Object314_SupportRoller.hpp"
+#include "Object314_Suspension.hpp"
+#include "Object314_TrackShoeSinglePin.hpp"
 
 namespace chrono {
 namespace vehicle {

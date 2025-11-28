@@ -1,12 +1,12 @@
-#include "chrono/utils/ChUtilsInputOutput.h"
-#include "chrono/solver/ChSolverBB.h"
 #include "chrono/output/ChOutputASCII.h"
+#include "chrono/solver/ChSolverBB.h"
+#include "chrono/utils/ChUtilsInputOutput.h"
 
 #include "chrono_vehicle/ChVehicleDataPath.h"
-#include "chrono_vehicle/terrain/RigidTerrain.h"
 #include "chrono_vehicle/driver/ChInteractiveDriver.h"
+#include "chrono_vehicle/terrain/RigidTerrain.h"
 
-#include "chrono_models/vehicle/marder/Marder.h"
+#include "object314/Object314.hpp"
 
 #ifdef CHRONO_PARDISO_MKL
     #include "chrono_pardisomkl/ChSolverPardisoMKL.h"
@@ -26,7 +26,7 @@ using namespace chrono::vsg3d;
 
 using namespace chrono;
 using namespace chrono::vehicle;
-using namespace chrono::vehicle::marder;
+using namespace chrono::vehicle::object314;
 
 using std::cout;
 using std::endl;
@@ -78,11 +78,11 @@ void AddFallingObjects(ChSystem* system);
 
 // =============================================================================
 int main(int argc, char* argv[]) {
-    std::cout << "Copyright (c) 2017 projectchrono.org\nChrono version: " << CHRONO_VERSION << std::endl;
-
     // --------------------------
     // Construct the M113 vehicle
     // --------------------------
+
+    SetVehicleDataPath(OBJECT314_DATA_DIR);
 
     ChContactMethod contact_method = ChContactMethod::SMC;
     CollisionType chassis_collision_type = CollisionType::NONE;
@@ -92,48 +92,48 @@ int main(int argc, char* argv[]) {
     EngineModelType engine_type = EngineModelType::SIMPLE;
     TransmissionModelType transmission_type = TransmissionModelType::AUTOMATIC_SIMPLE_MAP;
 
-    Marder marder;
-    marder.SetContactMethod(contact_method);
-    ////marder.SetTrackShoeType(shoe_type);
-    ////marder.SetDrivelineType(driveline_type);
-    marder.SetBrakeType(brake_type);
-    marder.SetEngineType(engine_type);
-    marder.SetTransmissionType(transmission_type);
-    marder.SetChassisCollisionType(chassis_collision_type);
+    Object314 Object314;
+    Object314.SetContactMethod(contact_method);
+    ////Object314.SetTrackShoeType(shoe_type);
+    ////Object314.SetDrivelineType(driveline_type);
+    Object314.SetBrakeType(brake_type);
+    Object314.SetEngineType(engine_type);
+    Object314.SetTransmissionType(transmission_type);
+    Object314.SetChassisCollisionType(chassis_collision_type);
 
-    ////marder.SetChassisFixed(true);
-    ////marder.CreateTrack(false);
+    ////Object314.SetChassisFixed(true);
+    ////Object314.CreateTrack(false);
 
     // Control steering type (enable crossdrive capability)
-    ////marder.GetDriveline()->SetGyrationMode(true);
+    ////Object314.GetDriveline()->SetGyrationMode(true);
 
     // Change collision detection system
-    ////marder.SetCollisionSystemType(ChCollisionSystem::Type::MULTICORE);
+    ////Object314.SetCollisionSystemType(ChCollisionSystem::Type::MULTICORE);
 
     // Change collision shape for road wheels, idlers, and rollers (true: cylinder; false: cylshell)
-    ////marder.SetWheelCollisionType(false, false, false);
+    ////Object314.SetWheelCollisionType(false, false, false);
 
     // ------------------------------------------------
     // Initialize the vehicle at the specified position
     // ------------------------------------------------
-    marder.SetInitPosition(ChCoordsys<>(initLoc, initRot));
-    marder.Initialize();
+    Object314.SetInitPosition(ChCoordsys<>(initLoc, initRot));
+    Object314.Initialize();
 
     // Set visualization type for vehicle components.
     VisualizationType track_vis = VisualizationType::MESH;
-    marder.SetChassisVisualizationType(VisualizationType::MESH);
-    marder.SetSprocketVisualizationType(track_vis);
-    marder.SetIdlerVisualizationType(track_vis);
-    marder.SetRollerVisualizationType(track_vis);
-    marder.SetSuspensionVisualizationType(track_vis);
-    marder.SetIdlerWheelVisualizationType(track_vis);
-    marder.SetRoadWheelVisualizationType(track_vis);
-    marder.SetTrackShoeVisualizationType(VisualizationType::PRIMITIVES);
+    Object314.SetChassisVisualizationType(VisualizationType::MESH);
+    Object314.SetSprocketVisualizationType(track_vis);
+    Object314.SetIdlerVisualizationType(track_vis);
+    Object314.SetRollerVisualizationType(track_vis);
+    Object314.SetSuspensionVisualizationType(track_vis);
+    Object314.SetIdlerWheelVisualizationType(track_vis);
+    Object314.SetRoadWheelVisualizationType(track_vis);
+    Object314.SetTrackShoeVisualizationType(VisualizationType::PRIMITIVES);
 
-    auto& vehicle = marder.GetVehicle();
+    auto& vehicle = Object314.GetVehicle();
 
     // Disable gravity in this simulation
-    ////marder.GetSystem()->SetGravitationalAcceleration(ChVector3d(0, 0, 0));
+    ////Object314.GetSystem()->SetGravitationalAcceleration(ChVector3d(0, 0, 0));
 
     // Change (SMC) contact force model
     ////if (contact_method == ChContactMethod::SMC) {
@@ -179,7 +179,7 @@ int main(int argc, char* argv[]) {
     // Create the terrain
     // ------------------
 
-    RigidTerrain terrain(marder.GetSystem());
+    RigidTerrain terrain(Object314.GetSystem());
     ChContactMaterialData minfo;
     minfo.mu = 0.9f;
     minfo.cr = 0.75f;
@@ -221,7 +221,7 @@ int main(int argc, char* argv[]) {
 #ifdef CHRONO_IRRLICHT
             // Create the vehicle Irrlicht interface
             auto vis_irr = chrono_types::make_shared<ChTrackedVehicleVisualSystemIrrlicht>();
-            vis_irr->SetWindowTitle("Marder Vehicle Demo");
+            vis_irr->SetWindowTitle("Object314 Vehicle Demo");
             vis_irr->SetChaseCamera(trackPoint, 10.0, 0.5);
             vis_irr->SetChaseCameraMultipliers(1e-4, 10);
             vis_irr->Initialize();
@@ -240,7 +240,7 @@ int main(int argc, char* argv[]) {
 #ifdef CHRONO_VSG
             // Create the vehicle VSG interface
             auto vis_vsg = chrono_types::make_shared<ChTrackedVehicleVisualSystemVSG>();
-            vis_vsg->SetWindowTitle("Marder Vehicle Demo");
+            vis_vsg->SetWindowTitle("Object314 Vehicle Demo");
             vis_vsg->SetWindowSize(1280, 800);
             vis_vsg->SetChaseCamera(trackPoint, 12.0, 0.75);
             vis_vsg->AttachVehicle(&vehicle);
@@ -257,7 +257,7 @@ int main(int argc, char* argv[]) {
     // Initialize output
     // -----------------
 
-    const std::string out_dir = GetChronoOutputPath() + "Marder";
+    const std::string out_dir = GetChronoOutputPath() + "Object314";
     const std::string pov_dir = out_dir + "/POVRAY";
     const std::string img_dir = out_dir + "/IMG";
 
@@ -315,10 +315,10 @@ int main(int argc, char* argv[]) {
 
         auto mkl_solver = chrono_types::make_shared<ChSolverPardisoMKL>();
         mkl_solver->LockSparsityPattern(true);
-        marder.GetSystem()->SetSolver(mkl_solver);
+        Object314.GetSystem()->SetSolver(mkl_solver);
 
-        marder.GetSystem()->SetTimestepperType(ChTimestepper::Type::HHT);
-        auto integrator = std::static_pointer_cast<ChTimestepperHHT>(marder.GetSystem()->GetTimestepper());
+        Object314.GetSystem()->SetTimestepperType(ChTimestepper::Type::HHT);
+        auto integrator = std::static_pointer_cast<ChTimestepperHHT>(Object314.GetSystem()->GetTimestepper());
         integrator->SetAlpha(-0.2);
         integrator->SetMaxIters(50);
         integrator->SetAbsTolerances(1e-4, 1e2);
@@ -331,9 +331,9 @@ int main(int argc, char* argv[]) {
         solver->SetMaxIterations(120);
         solver->SetOmega(0.8);
         solver->SetSharpnessLambda(1.0);
-        marder.GetSystem()->SetSolver(solver);
+        Object314.GetSystem()->SetSolver(solver);
 
-        marder.GetSystem()->SetMaxPenetrationRecoverySpeed(1.5);
+        Object314.GetSystem()->SetMaxPenetrationRecoverySpeed(1.5);
     }
 
     // ---------------
@@ -356,9 +356,9 @@ int main(int argc, char* argv[]) {
         if (dbg_output) {
             auto track_L = vehicle.GetTrackAssembly(LEFT);
             auto track_R = vehicle.GetTrackAssembly(RIGHT);
-            cout << "Time: " << marder.GetSystem()->GetChTime() << endl;
-            cout << "      Num. contacts: " << marder.GetSystem()->GetNumContacts() << endl;
-            const ChFrameMoving<>& c_ref = marder.GetChassisBody()->GetFrameRefToAbs();
+            cout << "Time: " << Object314.GetSystem()->GetChTime() << endl;
+            cout << "      Num. contacts: " << Object314.GetSystem()->GetNumContacts() << endl;
+            const ChFrameMoving<>& c_ref = Object314.GetChassisBody()->GetFrameRefToAbs();
             const ChVector3d& c_pos = vehicle.GetPos();
             cout << "      chassis:    " << c_pos.x() << "  " << c_pos.y() << "  " << c_pos.z() << endl;
             {
@@ -399,7 +399,7 @@ int main(int argc, char* argv[]) {
             if (povray_output) {
                 std::ostringstream filename;
                 filename << pov_dir << "/data_" << std::setw(4) << std::setfill('0') << render_frame + 1 << ".dat";
-                utils::WriteVisualizationAssets(marder.GetSystem(), filename.str());
+                utils::WriteVisualizationAssets(Object314.GetSystem(), filename.str());
             }
             if (img_output && step_number > 200) {
                 std::ostringstream filename;
@@ -416,13 +416,13 @@ int main(int argc, char* argv[]) {
         double time = vehicle.GetChTime();
         driver.Synchronize(time);
         terrain.Synchronize(time);
-        marder.Synchronize(time, driver_inputs);
+        Object314.Synchronize(time, driver_inputs);
         vis->Synchronize(time, driver_inputs);
 
         // Advance simulation for one timestep for all modules
         driver.Advance(step_size);
         terrain.Advance(step_size);
-        marder.Advance(step_size);
+        Object314.Advance(step_size);
         vis->Advance(step_size);
 
         // Report if the chassis experienced a collision
@@ -434,7 +434,7 @@ int main(int argc, char* argv[]) {
         step_number++;
     }
 
-    vehicle.WriteContacts("Marder_contacts.out");
+    vehicle.WriteContacts("Object314_contacts.out");
 
     return 0;
 }

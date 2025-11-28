@@ -3,6 +3,7 @@
 NVIDIA-OptiX-SDK*
 .vscode
 build
+data
 
 # Cmake
 

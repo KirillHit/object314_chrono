@@ -33,8 +33,6 @@ class CH_MODELS_API Object314_TrackAssemblySinglePin : public ChTrackAssemblySin
     static const double m_right_x_offset;
 };
 
-/// @} vehicle_models_Object314
-
 }  // namespace object314
 }  // end namespace vehicle
 }  // end namespace chrono

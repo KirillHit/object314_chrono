@@ -7,9 +7,6 @@
             "USERNAME": "${localEnv:USER}"
         }
     },
-    "settings": {
-        "C_Cpp.default.configurationProvider": "ms-vscode.cpptools"
-    },
     "extensions": [
         "ms-vscode.cpptools",
         "ms-vscode.cmake-tools",
@@ -18,5 +15,19 @@
     ],
     "workspaceFolder": "/home/${localEnv:USER}/tracked_vehicle_sim",
     "workspaceMount": "source=${localWorkspaceFolder},target=/home/${localEnv:USER}/tracked_vehicle_sim,type=bind",
-    "remoteUser": "${localEnv:USER}"
+    "remoteUser": "${localEnv:USER}",
+    "runArgs": [
+        "--gpus",
+        "all",
+        "-e",
+        "DISPLAY=${env:DISPLAY}",
+        "-e",
+        "XDG_RUNTIME_DIR=/tmp/runtime-root",
+        "-v",
+        "/tmp/.X11-unix:/tmp/.X11-unix",
+        "-v",
+        "/usr/share/vulkan/icd.d:/usr/share/vulkan/icd.d:ro",
+        "-v",
+        "/usr/lib/x86_64-linux-gnu/nvidia:/usr/lib/x86_64-linux-gnu/nvidia:ro"
+    ]
 }
