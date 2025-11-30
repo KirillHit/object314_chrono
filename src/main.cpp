@@ -220,7 +220,7 @@ int main(int argc, char* argv[]) {
             // Create the vehicle Irrlicht interface
             auto vis_irr = chrono_types::make_shared<ChTrackedVehicleVisualSystemIrrlicht>();
             vis_irr->SetWindowTitle("Object314 Vehicle Teleop");
-            vis_irr->SetChaseCamera(trackPoint, 10.0, 0.5);
+            vis_irr->SetChaseCamera(trackPoint, 2.0, 0.5);
             vis_irr->SetChaseCameraMultipliers(1e-4, 10);
             vis_irr->Initialize();
             vis_irr->AddLightDirectional(60, -90);

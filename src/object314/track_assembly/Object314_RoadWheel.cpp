@@ -16,14 +16,14 @@ namespace object314 {
 // -----------------------------------------------------------------------------
 // Static variables
 // -----------------------------------------------------------------------------
-const double Object314_RoadWheel::m_wheel_mass = 35.56;
-const ChVector3d Object314_RoadWheel::m_wheel_inertia(1.14, 2.16, 1.14);
-const double Object314_RoadWheel::m_wheel_radius = 0.350;
-const double Object314_RoadWheel::m_wheel_width = 0.220;
-const double Object314_RoadWheel::m_wheel_gap = 0.051;
+const double Object314_RoadWheel::m_wheel_mass = 1.0698;
+const ChVector3d Object314_RoadWheel::m_wheel_inertia(0.0027827, 0.0051995, 0.0027827);
+const double Object314_RoadWheel::m_wheel_radius = 0.18 / 2;
+const double Object314_RoadWheel::m_wheel_width = 0.05;
+const double Object314_RoadWheel::m_wheel_gap = 0.11;
 
-const std::string Object314_RoadWheelLeft::m_meshFile = "object314/Roller_L.obj";
-const std::string Object314_RoadWheelRight::m_meshFile = "object314/Roller_R.obj";
+const std::string Object314_RoadWheelLeft::m_meshFile = "object314/Roller.obj";
+const std::string Object314_RoadWheelRight::m_meshFile = "object314/Roller.obj";
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------

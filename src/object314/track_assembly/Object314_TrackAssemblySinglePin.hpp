@@ -25,10 +25,10 @@ class CH_MODELS_API Object314_TrackAssemblySinglePin : public ChTrackAssemblySin
   private:
     static const ChVector3d m_sprocket_loc;
     static const ChVector3d m_idler_loc;
-    static const ChVector3d m_susp_locs_L[6];
-    static const ChVector3d m_susp_locs_R[6];
-    static const ChVector3d m_supp_locs_L[3];
-    static const ChVector3d m_supp_locs_R[3];
+    static const ChVector3d m_susp_locs_L[4];
+    static const ChVector3d m_susp_locs_R[4];
+    static const ChVector3d m_supp_locs_L[2];
+    static const ChVector3d m_supp_locs_R[2];
 
     static const double m_right_x_offset;
 };

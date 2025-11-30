@@ -17,13 +17,13 @@ namespace object314 {
 // -----------------------------------------------------------------------------
 // Static variables
 // -----------------------------------------------------------------------------
-const double Object314_Idler::m_carrier_mass = 10;
-const ChVector3d Object314_Idler::m_carrier_inertia(0.04, 0.04, 0.04);
-const double Object314_Idler::m_carrier_radius = 0.02;
+const double Object314_Idler::m_carrier_mass = 0.5;
+const ChVector3d Object314_Idler::m_carrier_inertia(0.002, 0.002, 0.002);
+const double Object314_Idler::m_carrier_radius = 0.0001;
 
-const double Object314_Idler::m_tensioner_l0 = 0.75;
-const double Object314_Idler::m_tensioner_f = 9.81 * 25000.0 / 10.0;  // 10% Weight Force      M113: 2e4;
-const double Object314_Idler::m_tensioner_k = 2e6;
+const double Object314_Idler::m_tensioner_l0 = 0.36;
+const double Object314_Idler::m_tensioner_f = 9.81 * 300.0 / 10.0;  // 10% Weight Force      M113: 2e4;
+const double Object314_Idler::m_tensioner_k = 5e5;
 const double Object314_Idler::m_tensioner_c = Object314_Idler::m_tensioner_k * 0.05;
 
 // -----------------------------------------------------------------------------
@@ -65,16 +65,16 @@ const ChVector3d Object314_Idler::GetLocation(PointId which) {
             point = ChVector3d(0, 0, 0);
             break;
         case CARRIER:
-            point = ChVector3d(0, -0.1, 0);
+            point = ChVector3d(0, -0.05, 0);
             break;
         case CARRIER_CHASSIS:
-            point = ChVector3d(0, -0.2, 0);
+            point = ChVector3d(0, -0.1, 0);
             break;
         case TSDA_CARRIER:
-            point = ChVector3d(0, -0.2, 0);
+            point = ChVector3d(0, -0.13, 0);
             break;
         case TSDA_CHASSIS:
-            point = ChVector3d(0.5, -0.2, 0);
+            point = ChVector3d(-0.36, -0.13, 0);
             break;
         default:
             point = ChVector3d(0, 0, 0);

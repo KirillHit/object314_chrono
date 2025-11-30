@@ -89,7 +89,7 @@ void Object314_Vehicle::Initialize(const ChCoordsys<>& chassisPos, double chassi
     m_chassis->Initialize(this, chassisPos, chassisFwdVel, VehicleCollisionFamily::CHASSIS_FAMILY);
 
     // Initialize the left and right track assemblies.
-    double track_offset = 1.36;
+    double track_offset = 0.84 / 2.0;
     m_tracks[0]->Initialize(m_chassis, ChVector3d(0, track_offset, 0), m_create_track);
     m_tracks[1]->Initialize(m_chassis, ChVector3d(0, -track_offset, 0), m_create_track);
 

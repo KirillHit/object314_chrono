@@ -16,14 +16,14 @@ namespace object314 {
 // -----------------------------------------------------------------------------
 // Static variables
 // -----------------------------------------------------------------------------
-const double Object314_IdlerWheel::m_wheel_mass = 25.76;
-const ChVector3d Object314_IdlerWheel::m_wheel_inertia(0.618, 1.12, 0.618);
-const double Object314_IdlerWheel::m_wheel_radius = 0.334;
-const double Object314_IdlerWheel::m_wheel_width = 0.220;
-const double Object314_IdlerWheel::m_wheel_gap = 0.051;
+const double Object314_IdlerWheel::m_wheel_mass = 1.0698;
+const ChVector3d Object314_IdlerWheel::m_wheel_inertia(0.0027827, 0.0051995, 0.0027827);
+const double Object314_IdlerWheel::m_wheel_radius = 0.18 / 2;
+const double Object314_IdlerWheel::m_wheel_width = 0.05;
+const double Object314_IdlerWheel::m_wheel_gap = 0.11;
 
-const std::string Object314_IdlerWheelLeft::m_meshFile = "object314/Idler_L.obj";
-const std::string Object314_IdlerWheelRight::m_meshFile = "object314/Idler_R.obj";
+const std::string Object314_IdlerWheelLeft::m_meshFile = "object314/Roller.obj";
+const std::string Object314_IdlerWheelRight::m_meshFile = "object314/Roller.obj";
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
