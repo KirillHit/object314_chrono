@@ -6,5 +6,5 @@ WORKDIR /workspace
 COPY ../src .
 
 RUN mkdir -p build \
-    && cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/workspace/install \
+    && cmake -S . -B build -DCMAKE_BUILD_TYPE=Release \
     && cmake --build build --target install --parallel

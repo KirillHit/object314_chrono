@@ -36,7 +36,7 @@ using std::endl;
 // =============================================================================
 
 // Run-time visualization system (IRRLICHT or VSG)
-ChVisualSystem::Type vis_type = ChVisualSystem::Type::VSG;
+ChVisualSystem::Type vis_type = ChVisualSystem::Type::IRRLICHT;
 
 // Initial vehicle position
 ChVector3d initLoc(-40, 0, 0.9);
@@ -79,10 +79,8 @@ void AddFallingObjects(ChSystem* system);
 // =============================================================================
 int main(int argc, char* argv[]) {
     // --------------------------
-    // Construct the M113 vehicle
+    // Construct the Object314 vehicle
     // --------------------------
-
-    SetVehicleDataPath(OBJECT314_DATA_DIR);
 
     ChContactMethod contact_method = ChContactMethod::SMC;
     CollisionType chassis_collision_type = CollisionType::NONE;
@@ -92,52 +90,52 @@ int main(int argc, char* argv[]) {
     EngineModelType engine_type = EngineModelType::SIMPLE;
     TransmissionModelType transmission_type = TransmissionModelType::AUTOMATIC_SIMPLE_MAP;
 
-    Object314 Object314;
-    Object314.SetContactMethod(contact_method);
-    ////Object314.SetTrackShoeType(shoe_type);
-    ////Object314.SetDrivelineType(driveline_type);
-    Object314.SetBrakeType(brake_type);
-    Object314.SetEngineType(engine_type);
-    Object314.SetTransmissionType(transmission_type);
-    Object314.SetChassisCollisionType(chassis_collision_type);
+    Object314 object314;
+    object314.SetContactMethod(contact_method);
+    ////object314.SetTrackShoeType(shoe_type);
+    ////object314.SetDrivelineType(driveline_type);
+    object314.SetBrakeType(brake_type);
+    object314.SetEngineType(engine_type);
+    object314.SetTransmissionType(transmission_type);
+    object314.SetChassisCollisionType(chassis_collision_type);
 
-    ////Object314.SetChassisFixed(true);
-    ////Object314.CreateTrack(false);
+    ////object314.SetChassisFixed(true);
+    ////object314.CreateTrack(false);
 
     // Control steering type (enable crossdrive capability)
-    ////Object314.GetDriveline()->SetGyrationMode(true);
+    ////object314.GetDriveline()->SetGyrationMode(true);
 
     // Change collision detection system
-    ////Object314.SetCollisionSystemType(ChCollisionSystem::Type::MULTICORE);
+    ////object314.SetCollisionSystemType(ChCollisionSystem::Type::MULTICORE);
 
     // Change collision shape for road wheels, idlers, and rollers (true: cylinder; false: cylshell)
-    ////Object314.SetWheelCollisionType(false, false, false);
+    ////object314.SetWheelCollisionType(false, false, false);
 
     // ------------------------------------------------
     // Initialize the vehicle at the specified position
     // ------------------------------------------------
-    Object314.SetInitPosition(ChCoordsys<>(initLoc, initRot));
-    Object314.Initialize();
+    object314.SetInitPosition(ChCoordsys<>(initLoc, initRot));
+    object314.Initialize();
 
     // Set visualization type for vehicle components.
     VisualizationType track_vis = VisualizationType::MESH;
-    Object314.SetChassisVisualizationType(VisualizationType::MESH);
-    Object314.SetSprocketVisualizationType(track_vis);
-    Object314.SetIdlerVisualizationType(track_vis);
-    Object314.SetRollerVisualizationType(track_vis);
-    Object314.SetSuspensionVisualizationType(track_vis);
-    Object314.SetIdlerWheelVisualizationType(track_vis);
-    Object314.SetRoadWheelVisualizationType(track_vis);
-    Object314.SetTrackShoeVisualizationType(VisualizationType::PRIMITIVES);
+    object314.SetChassisVisualizationType(VisualizationType::MESH);
+    object314.SetSprocketVisualizationType(track_vis);
+    object314.SetIdlerVisualizationType(track_vis);
+    object314.SetRollerVisualizationType(track_vis);
+    object314.SetSuspensionVisualizationType(track_vis);
+    object314.SetIdlerWheelVisualizationType(track_vis);
+    object314.SetRoadWheelVisualizationType(track_vis);
+    object314.SetTrackShoeVisualizationType(VisualizationType::PRIMITIVES);
 
-    auto& vehicle = Object314.GetVehicle();
+    auto& vehicle = object314.GetVehicle();
 
     // Disable gravity in this simulation
-    ////Object314.GetSystem()->SetGravitationalAcceleration(ChVector3d(0, 0, 0));
+    ////object314.GetSystem()->SetGravitationalAcceleration(ChVector3d(0, 0, 0));
 
     // Change (SMC) contact force model
     ////if (contact_method == ChContactMethod::SMC) {
-    ////static_cast<ChSystemSMC*>(m113.GetSystem())->SetContactForceModel(ChSystemSMC::ContactForceModel::PlainCoulomb);
+    ////static_cast<ChSystemSMC*>(object314.GetSystem())->SetContactForceModel(ChSystemSMC::ContactForceModel::PlainCoulomb);
     ////}
 
     // --------------------------------------------------
@@ -179,7 +177,7 @@ int main(int argc, char* argv[]) {
     // Create the terrain
     // ------------------
 
-    RigidTerrain terrain(Object314.GetSystem());
+    RigidTerrain terrain(object314.GetSystem());
     ChContactMaterialData minfo;
     minfo.mu = 0.9f;
     minfo.cr = 0.75f;
@@ -221,7 +219,7 @@ int main(int argc, char* argv[]) {
 #ifdef CHRONO_IRRLICHT
             // Create the vehicle Irrlicht interface
             auto vis_irr = chrono_types::make_shared<ChTrackedVehicleVisualSystemIrrlicht>();
-            vis_irr->SetWindowTitle("Object314 Vehicle Demo");
+            vis_irr->SetWindowTitle("Object314 Vehicle Teleop");
             vis_irr->SetChaseCamera(trackPoint, 10.0, 0.5);
             vis_irr->SetChaseCameraMultipliers(1e-4, 10);
             vis_irr->Initialize();
@@ -240,7 +238,7 @@ int main(int argc, char* argv[]) {
 #ifdef CHRONO_VSG
             // Create the vehicle VSG interface
             auto vis_vsg = chrono_types::make_shared<ChTrackedVehicleVisualSystemVSG>();
-            vis_vsg->SetWindowTitle("Object314 Vehicle Demo");
+            vis_vsg->SetWindowTitle("Object314 Vehicle Teleop");
             vis_vsg->SetWindowSize(1280, 800);
             vis_vsg->SetChaseCamera(trackPoint, 12.0, 0.75);
             vis_vsg->AttachVehicle(&vehicle);
@@ -315,10 +313,10 @@ int main(int argc, char* argv[]) {
 
         auto mkl_solver = chrono_types::make_shared<ChSolverPardisoMKL>();
         mkl_solver->LockSparsityPattern(true);
-        Object314.GetSystem()->SetSolver(mkl_solver);
+        object314.GetSystem()->SetSolver(mkl_solver);
 
-        Object314.GetSystem()->SetTimestepperType(ChTimestepper::Type::HHT);
-        auto integrator = std::static_pointer_cast<ChTimestepperHHT>(Object314.GetSystem()->GetTimestepper());
+        object314.GetSystem()->SetTimestepperType(ChTimestepper::Type::HHT);
+        auto integrator = std::static_pointer_cast<ChTimestepperHHT>(object314.GetSystem()->GetTimestepper());
         integrator->SetAlpha(-0.2);
         integrator->SetMaxIters(50);
         integrator->SetAbsTolerances(1e-4, 1e2);
@@ -331,9 +329,9 @@ int main(int argc, char* argv[]) {
         solver->SetMaxIterations(120);
         solver->SetOmega(0.8);
         solver->SetSharpnessLambda(1.0);
-        Object314.GetSystem()->SetSolver(solver);
+        object314.GetSystem()->SetSolver(solver);
 
-        Object314.GetSystem()->SetMaxPenetrationRecoverySpeed(1.5);
+        object314.GetSystem()->SetMaxPenetrationRecoverySpeed(1.5);
     }
 
     // ---------------
@@ -356,9 +354,9 @@ int main(int argc, char* argv[]) {
         if (dbg_output) {
             auto track_L = vehicle.GetTrackAssembly(LEFT);
             auto track_R = vehicle.GetTrackAssembly(RIGHT);
-            cout << "Time: " << Object314.GetSystem()->GetChTime() << endl;
-            cout << "      Num. contacts: " << Object314.GetSystem()->GetNumContacts() << endl;
-            const ChFrameMoving<>& c_ref = Object314.GetChassisBody()->GetFrameRefToAbs();
+            cout << "Time: " << object314.GetSystem()->GetChTime() << endl;
+            cout << "      Num. contacts: " << object314.GetSystem()->GetNumContacts() << endl;
+            const ChFrameMoving<>& c_ref = object314.GetChassisBody()->GetFrameRefToAbs();
             const ChVector3d& c_pos = vehicle.GetPos();
             cout << "      chassis:    " << c_pos.x() << "  " << c_pos.y() << "  " << c_pos.z() << endl;
             {
@@ -399,7 +397,7 @@ int main(int argc, char* argv[]) {
             if (povray_output) {
                 std::ostringstream filename;
                 filename << pov_dir << "/data_" << std::setw(4) << std::setfill('0') << render_frame + 1 << ".dat";
-                utils::WriteVisualizationAssets(Object314.GetSystem(), filename.str());
+                utils::WriteVisualizationAssets(object314.GetSystem(), filename.str());
             }
             if (img_output && step_number > 200) {
                 std::ostringstream filename;
@@ -416,13 +414,13 @@ int main(int argc, char* argv[]) {
         double time = vehicle.GetChTime();
         driver.Synchronize(time);
         terrain.Synchronize(time);
-        Object314.Synchronize(time, driver_inputs);
+        object314.Synchronize(time, driver_inputs);
         vis->Synchronize(time, driver_inputs);
 
         // Advance simulation for one timestep for all modules
         driver.Advance(step_size);
         terrain.Advance(step_size);
-        Object314.Advance(step_size);
+        object314.Advance(step_size);
         vis->Advance(step_size);
 
         // Report if the chassis experienced a collision
@@ -434,7 +432,7 @@ int main(int argc, char* argv[]) {
         step_number++;
     }
 
-    vehicle.WriteContacts("Object314_contacts.out");
+    vehicle.WriteContacts("object314_contacts.out");
 
     return 0;
 }
