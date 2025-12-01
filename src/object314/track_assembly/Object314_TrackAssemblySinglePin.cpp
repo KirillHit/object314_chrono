@@ -23,7 +23,7 @@ static const double supp_z_offset = 0.017357;
 const double Object314_TrackAssemblySinglePin::m_right_x_offset = 0.0;
 
 const ChVector3d Object314_TrackAssemblySinglePin::m_sprocket_loc(-0.55215, 0, -0.044643);
-const ChVector3d Object314_TrackAssemblySinglePin::m_idler_loc(0.57395, 0, -0.041643);
+const ChVector3d Object314_TrackAssemblySinglePin::m_idler_loc(0.5, 0, -0.041643);
 
 const ChVector3d Object314_TrackAssemblySinglePin::m_susp_locs_L[4] = {
     ChVector3d(0.37971, 0, -0.28608), ChVector3d(0.12971, 0, -0.28608), ChVector3d(-0.12029, 0, -0.28608),
@@ -53,7 +53,7 @@ Object314_TrackAssemblySinglePin::Object314_TrackAssemblySinglePin(VehicleSide s
             m_idler = chrono_types::make_shared<Object314_Idler>("Object314_Idler_Left", side);
             m_brake = chrono_types::make_shared<Object314_BrakeShafts>("Object314_BrakeLeft");
             m_sprocket = chrono_types::make_shared<Object314_SprocketSinglePinLeft>();
-            num_shoes = 62;  // 61
+            num_shoes = 61;
             suspName += "Left_";
             shoeName += "Left_";
             m_rollers[0] = chrono_types::make_shared<Object314_SupportRollerLeft>(0);
@@ -64,7 +64,7 @@ Object314_TrackAssemblySinglePin::Object314_TrackAssemblySinglePin(VehicleSide s
             m_idler = chrono_types::make_shared<Object314_Idler>("Object314_Idler_Right", side);
             m_brake = chrono_types::make_shared<Object314_BrakeShafts>("Object314_BrakeRight");
             m_sprocket = chrono_types::make_shared<Object314_SprocketSinglePinRight>();
-            num_shoes = 62;
+            num_shoes = 61;
             suspName += "Right_";
             shoeName += "Right_";
             m_rollers[0] = chrono_types::make_shared<Object314_SupportRollerRight>(0);

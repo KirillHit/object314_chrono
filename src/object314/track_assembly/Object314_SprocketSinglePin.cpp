@@ -24,10 +24,10 @@ const ChVector3d Object314_SprocketSinglePin::m_gear_inertia(0.00339, 0.00463, 0
 const double Object314_SprocketSinglePin::m_axle_inertia = 0.0021;
 const double Object314_SprocketSinglePin::m_separation = 0.0;
 
-const double Object314_SprocketSinglePin::m_gear_RT = 0.21 / 2;           // Outer radius
-const double Object314_SprocketSinglePin::m_gear_RC = (0.21 + 0.18) / 4;  // Arc centers radius
-const double Object314_SprocketSinglePin::m_gear_R = 0.07;                // Arc radius
-const double Object314_SprocketSinglePin::m_gear_RA = 0.18 / 2;           // Assembly radius
+const double Object314_SprocketSinglePin::m_gear_RT = 0.105;              // Outer radius
+const double Object314_SprocketSinglePin::m_gear_RC = 0.11;               // Arc centers radius
+const double Object314_SprocketSinglePin::m_gear_R = 0.02;                // Arc radius
+const double Object314_SprocketSinglePin::m_gear_RA = (0.21 + 0.18) / 4;  // Assembly radius
 
 const double Object314_SprocketSinglePin::m_lateral_backlash = 0.005;
 
@@ -50,8 +50,8 @@ void Object314_SprocketSinglePin::CreateContactMaterial(ChContactMethod contact_
 // -----------------------------------------------------------------------------
 void Object314_SprocketSinglePin::AddVisualizationAssets(VisualizationType vis) {
     if (vis == VisualizationType::MESH) {
-        auto trimesh = ChTriangleMeshConnected::CreateFromWavefrontFile(GetMeshFile(), false, false);
-        // auto trimesh = CreateVisualizationMesh(0.15, 0.03, 0.01);
+        // auto trimesh = ChTriangleMeshConnected::CreateFromWavefrontFile(GetMeshFile(), false, false);
+        auto trimesh = CreateVisualizationMesh(0.05, 0.01, 0.01);
         auto trimesh_shape = chrono_types::make_shared<ChVisualShapeTriangleMesh>();
         trimesh_shape->SetMesh(trimesh);
         trimesh_shape->SetName(filesystem::path(GetMeshFile()).stem());

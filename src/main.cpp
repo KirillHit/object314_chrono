@@ -39,7 +39,7 @@ using std::endl;
 ChVisualSystem::Type vis_type = ChVisualSystem::Type::IRRLICHT;
 
 // Initial vehicle position
-ChVector3d initLoc(-40, 0, 0.9);
+ChVector3d initLoc(-40, 0, 0.5);
 
 // Initial vehicle orientation
 ChQuaternion<> initRot(1, 0, 0, 0);
@@ -54,7 +54,7 @@ double terrainLength = 100.0;  // size in X direction
 double terrainWidth = 100.0;   // size in Y direction
 
 // Simulation step size
-double step_size = 5e-4;
+double step_size = 1e-4;
 
 // Use HHT + MKL
 bool use_mkl = false;
@@ -118,7 +118,7 @@ int main(int argc, char* argv[]) {
     object314.Initialize();
 
     // Set visualization type for vehicle components.
-    VisualizationType track_vis = VisualizationType::MESH;
+    VisualizationType track_vis = VisualizationType::PRIMITIVES;
     object314.SetChassisVisualizationType(VisualizationType::MESH);
     object314.SetSprocketVisualizationType(track_vis);
     object314.SetIdlerVisualizationType(track_vis);
