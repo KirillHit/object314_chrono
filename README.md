@@ -1,6 +1,6 @@
 # Object314 Chrono
 
-Симуляционная среда для гусеничного робота «Объект 314», построенная на базе Project Chrono.
+Симуляционная среда для гусеничного робота «Объект 314», построенная на базе Project Chrono. Робот разработан командой [Polytech Voltage Machine](https://github.com/Polytech-VM-Team).
 
 ## Запуск
 
