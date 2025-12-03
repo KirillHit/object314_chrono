@@ -27,7 +27,20 @@ target_link_libraries(object314_teleop
     object314_vehicle
 )
 
-install(TARGETS object314_teleop RUNTIME DESTINATION /usr/local/share/chrono/bin)
+add_executable(object314_pid pid_control.cpp)
+
+target_link_libraries(object314_pid
+  PRIVATE
+    object314_vehicle
+)
+
+install(
+  TARGETS
+    object314_teleop
+    object314_pid 
+  RUNTIME DESTINATION 
+    /usr/local/share/chrono/bin
+)
 
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/object314/data/
         DESTINATION /usr/local/share/chrono/data/vehicle/object314)

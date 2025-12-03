@@ -1,5 +1,6 @@
 #include "chrono/output/ChOutputASCII.h"
 #include "chrono/solver/ChSolverBB.h"
+#include "chrono/utils/ChControllers.h"
 #include "chrono/utils/ChUtilsInputOutput.h"
 
 #include "chrono_vehicle/ChVehicleDataPath.h"
@@ -29,6 +30,7 @@ using namespace chrono::vsg3d;
 using namespace chrono;
 using namespace chrono::vehicle;
 using namespace chrono::vehicle::object314;
+using namespace chrono::utils;
 
 using std::cout;
 using std::endl;
@@ -236,8 +238,8 @@ int main(int argc, char* argv[]) {
     // Add fixed and/or falling objects
     // --------------------------------
 
-    /* for (int idx = 0; idx < 20; ++idx)
-        AddFixedObstacles(vehicle.GetSystem(), idx * 0.3); */
+    for (int idx = 0; idx < 20; ++idx)
+        AddFixedObstacles(vehicle.GetSystem(), idx * 0.3);
     ////AddFallingObjects(vehicle.GetSystem());
 
     // ------------------------
@@ -381,6 +383,16 @@ int main(int argc, char* argv[]) {
     }
 
     // ---------------
+    // PID controller
+    // ---------------
+
+    ChControllerPID pid_speed(0.12, 0.03, 0.01);
+    pid_speed.Reset();
+    double target_speed = 1.0;
+    std::vector<double> error_log;
+    std::vector<double> time_log;
+
+    // ---------------
     // Simulation loop
     // ---------------
 
@@ -453,11 +465,23 @@ int main(int argc, char* argv[]) {
             render_frame++;
         }
 
-        // Current driver inputs
+        // --------------- PID section -----------------
+
+        double time = vehicle.GetChTime();
+
+        double current_speed = vehicle.GetSpeed();
+        double error = target_speed - current_speed;
+        double control = pid_speed.GetOutput(error, time);
+        if (step_number % 10 == 0) {
+            error_log.push_back(current_speed);
+            time_log.push_back(time);
+        }
+
+        // Собираем итоговые управляющие воздействия
         DriverInputs driver_inputs = driver.GetInputs();
+        driver_inputs.m_throttle = control;
 
         // Update modules (process inputs from other modules)
-        double time = vehicle.GetChTime();
         driver.Synchronize(time);
         terrain.Synchronize(time);
         object314.Synchronize(time, driver_inputs);
@@ -479,6 +503,13 @@ int main(int argc, char* argv[]) {
     }
 
     vehicle.WriteContacts("object314_contacts.out");
+
+    std::ofstream f("pid_error.csv");
+    f << "time,speed\n";
+    for (size_t i = 0; i < error_log.size(); i++) {
+        f << time_log[i] << "," << error_log[i] << "\n";
+    }
+    f.close();
 
     return 0;
 }
