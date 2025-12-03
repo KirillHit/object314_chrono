@@ -20,7 +20,7 @@ namespace object314 {
 // -----------------------------------------------------------------------------
 static const double supp_z_offset = 0.017357;
 
-const double Object314_TrackAssemblySinglePin::m_right_x_offset = 0.0;
+const double Object314_TrackAssemblySinglePin::m_right_x_offset = 0.01;
 
 const ChVector3d Object314_TrackAssemblySinglePin::m_sprocket_loc(-0.55215, 0, -0.044643);
 const ChVector3d Object314_TrackAssemblySinglePin::m_idler_loc(0.5, 0, -0.041643);

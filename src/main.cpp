@@ -6,6 +6,8 @@
 #include "chrono_vehicle/driver/ChInteractiveDriver.h"
 #include "chrono_vehicle/terrain/RigidTerrain.h"
 
+#include "chrono_vehicle/terrain/SCMTerrain.h"
+
 #include "object314/Object314.hpp"
 
 #ifdef CHRONO_PARDISO_MKL
@@ -22,6 +24,7 @@ using namespace chrono::irrlicht;
 using namespace chrono::vsg3d;
 #endif
 
+#include "chrono/core/ChQuaternion.h"
 #include "chrono_thirdparty/filesystem/path.h"
 
 using namespace chrono;
@@ -36,10 +39,10 @@ using std::endl;
 // =============================================================================
 
 // Run-time visualization system (IRRLICHT or VSG)
-ChVisualSystem::Type vis_type = ChVisualSystem::Type::IRRLICHT;
+ChVisualSystem::Type vis_type = ChVisualSystem::Type::VSG;
 
 // Initial vehicle position
-ChVector3d initLoc(-40, 0, 0.5);
+ChVector3d initLoc(-4, 0, 0.5);
 
 // Initial vehicle orientation
 ChQuaternion<> initRot(1, 0, 0, 0);
@@ -73,7 +76,7 @@ bool dbg_output = false;
 // =============================================================================
 
 // Forward declarations
-void AddFixedObstacles(ChSystem* system);
+void AddFixedObstacles(ChSystem* system, double diff = 0);
 void AddFallingObjects(ChSystem* system);
 
 // =============================================================================
@@ -118,7 +121,7 @@ int main(int argc, char* argv[]) {
     object314.Initialize();
 
     // Set visualization type for vehicle components.
-    VisualizationType track_vis = VisualizationType::PRIMITIVES;
+    VisualizationType track_vis = VisualizationType::MESH;
     object314.SetChassisVisualizationType(VisualizationType::MESH);
     object314.SetSprocketVisualizationType(track_vis);
     object314.SetIdlerVisualizationType(track_vis);
@@ -165,7 +168,7 @@ int main(int argc, char* argv[]) {
     ////vehicle.MonitorContacts(TrackedCollisionFlag::CHASSIS);
 
     // Render contact normals and/or contact forces.
-    vehicle.SetRenderContactNormals(true);
+    ////vehicle.SetRenderContactNormals(true);
     ////vehicle.SetRenderContactForces(true, 1e-4);
 
     // Collect contact information.
@@ -176,7 +179,7 @@ int main(int argc, char* argv[]) {
     // ------------------
     // Create the terrain
     // ------------------
-
+#ifndef SMC_TERRAIN
     RigidTerrain terrain(object314.GetSystem());
     ChContactMaterialData minfo;
     minfo.mu = 0.9f;
@@ -187,12 +190,55 @@ int main(int argc, char* argv[]) {
     patch->SetColor(ChColor(0.5f, 0.8f, 0.5f));
     patch->SetTexture(GetVehicleDataFile("terrain/textures/grass.jpg"), 20, 20);
     terrain.Initialize();
+#else
+    // Create the SCM deformable terrain
+    vehicle::SCMTerrain terrain(object314.GetSystem());
+
+    // Displace/rotate the terrain reference frame.
+    // Note that SCMTerrain uses a default ISO reference frame (Z up). Since the mechanism is modeled here in
+    // a Y-up global frame, we rotate the terrain frame by -90 degrees about the X axis.
+    terrain.SetReferenceFrame(ChCoordsys<>(ChVector3d(0, -0.5, 0), QuatFromAngleX(0)));
+
+    // Use a regular grid
+    double length = 14;
+    double width = 14;
+    double mesh_resolution = 0.02;
+    terrain.Initialize(length, width, mesh_resolution);
+
+    // Set the soil terramechanical parameters
+    terrain.SetSoilParameters(0.82e6,   // Bekker Kphi
+                              0.14e4,   // Bekker Kc
+                              1.0,      // Bekker n exponent
+                              0.017e4,  // Mohr cohesive limit (Pa)
+                              35,       // Mohr friction limit (degrees)
+                              1.78e-2,  // Janosi shear coefficient (m)
+                              2e8,      // Elastic stiffness (Pa/m), before plastic yield, must be > Kphi
+                              3e4       // Damping (Pa s/m), proportional to negative vertical speed (optional)
+    );
+
+    // Enable/disable bulldozing effects
+    bool enable_bulldozing = true;
+
+    // Set up bulldozing factors
+    terrain.EnableBulldozing(enable_bulldozing);
+    terrain.SetBulldozingParameters(55,  // angle of friction for erosion of displaced material at the border of the rut
+                                    1,   // displaced material vs downward pressed material.
+                                    5,   // number of erosion refinements per timestep
+                                    6);  // number of concentric vertex selections subject to erosion
+
+    // Set some visualization parameters
+    terrain.SetColormap(ChColormap::Type::COPPER);
+    ////terrain.SetPlotType(vehicle::SCMTerrain::PLOT_PRESSURE, 0, 20000);
+    terrain.SetPlotType(vehicle::SCMTerrain::PLOT_SINKAGE, -0.01, 0.04);
+    terrain.GetMesh()->SetWireframe(true);
+#endif
 
     // --------------------------------
     // Add fixed and/or falling objects
     // --------------------------------
 
-    ////AddFixedObstacles(vehicle.GetSystem());
+    /* for (int idx = 0; idx < 20; ++idx)
+        AddFixedObstacles(vehicle.GetSystem(), idx * 0.3); */
     ////AddFallingObjects(vehicle.GetSystem());
 
     // ------------------------
@@ -200,9 +246,9 @@ int main(int argc, char* argv[]) {
     // ------------------------
 
     ChInteractiveDriver driver(vehicle);
-    double steering_time = 0.5;  // time to go from 0 to +1 (or from 0 to -1)
-    double throttle_time = 1.0;  // time to go from 0 to +1
-    double braking_time = 0.3;   // time to go from 0 to +1
+    double steering_time = 1;  // time to go from 0 to +1 (or from 0 to -1)
+    double throttle_time = 1;  // time to go from 0 to +1
+    double braking_time = 1;   // time to go from 0 to +1
     driver.SetSteeringDelta(render_step_size / steering_time);
     driver.SetThrottleDelta(render_step_size / throttle_time);
     driver.SetBrakingDelta(render_step_size / braking_time);
@@ -220,7 +266,8 @@ int main(int argc, char* argv[]) {
             // Create the vehicle Irrlicht interface
             auto vis_irr = chrono_types::make_shared<ChTrackedVehicleVisualSystemIrrlicht>();
             vis_irr->SetWindowTitle("Object314 Vehicle Teleop");
-            vis_irr->SetChaseCamera(trackPoint, 2.0, 0.5);
+            vis_irr->SetChaseCamera(trackPoint, 2.5, 0.2);
+            vis_irr->SetChaseCameraAngle(1.59);
             vis_irr->SetChaseCameraMultipliers(1e-4, 10);
             vis_irr->Initialize();
             vis_irr->AddLightDirectional(60, -90);
@@ -240,7 +287,7 @@ int main(int argc, char* argv[]) {
             auto vis_vsg = chrono_types::make_shared<ChTrackedVehicleVisualSystemVSG>();
             vis_vsg->SetWindowTitle("Object314 Vehicle Teleop");
             vis_vsg->SetWindowSize(1280, 800);
-            vis_vsg->SetChaseCamera(trackPoint, 12.0, 0.75);
+            vis_vsg->SetChaseCamera(trackPoint, 2.5, 0.75);
             vis_vsg->AttachVehicle(&vehicle);
             vis_vsg->AttachDriver(&driver);
             vis_vsg->Initialize();
@@ -264,13 +311,13 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    if (povray_output) {
+    /* if (povray_output) {
         if (!filesystem::create_directory(filesystem::path(pov_dir))) {
             std::cout << "Error creating directory " << pov_dir << std::endl;
             return 1;
         }
         terrain.ExportMeshPovray(out_dir);
-    }
+    } */
 
     if (img_output) {
         if (!filesystem::create_directory(filesystem::path(img_dir))) {
@@ -438,12 +485,12 @@ int main(int argc, char* argv[]) {
 }
 
 // =============================================================================
-void AddFixedObstacles(ChSystem* system) {
-    double radius = 2.2;
+void AddFixedObstacles(ChSystem* system, double diff) {
+    double radius = 0.2;
     double length = 6;
 
     auto obstacle = chrono_types::make_shared<ChBody>();
-    obstacle->SetPos(ChVector3d(10, 0, -1.8));
+    obstacle->SetPos(ChVector3d(-3 + diff, 0, -0.18));
     obstacle->SetFixed(true);
     obstacle->EnableCollision(true);
 

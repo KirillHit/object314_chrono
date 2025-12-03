@@ -18,7 +18,7 @@ namespace object314 {
 // -----------------------------------------------------------------------------
 const double Object314_RoadWheel::m_wheel_mass = 1.0698;
 const ChVector3d Object314_RoadWheel::m_wheel_inertia(0.0027827, 0.0051995, 0.0027827);
-const double Object314_RoadWheel::m_wheel_radius = 0.18 / 2;
+const double Object314_RoadWheel::m_wheel_radius = 0.19 / 2;
 const double Object314_RoadWheel::m_wheel_width = 0.1;
 const double Object314_RoadWheel::m_wheel_gap = 0.21;
 

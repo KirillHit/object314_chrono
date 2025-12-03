@@ -50,8 +50,8 @@ void Object314_SprocketSinglePin::CreateContactMaterial(ChContactMethod contact_
 // -----------------------------------------------------------------------------
 void Object314_SprocketSinglePin::AddVisualizationAssets(VisualizationType vis) {
     if (vis == VisualizationType::MESH) {
-        // auto trimesh = ChTriangleMeshConnected::CreateFromWavefrontFile(GetMeshFile(), false, false);
-        auto trimesh = CreateVisualizationMesh(0.05, 0.01, 0.01);
+        auto trimesh = ChTriangleMeshConnected::CreateFromWavefrontFile(GetMeshFile(), false, false);
+        // auto trimesh = CreateVisualizationMesh(0.05, 0.01, 0.01);
         auto trimesh_shape = chrono_types::make_shared<ChVisualShapeTriangleMesh>();
         trimesh_shape->SetMesh(trimesh);
         trimesh_shape->SetName(filesystem::path(GetMeshFile()).stem());

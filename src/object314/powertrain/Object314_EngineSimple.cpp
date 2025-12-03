@@ -7,9 +7,9 @@ namespace vehicle {
 namespace object314 {
 
 // Static variables
-const double Object314_EngineSimple::m_max_torque = 2400 / 50;
-const double Object314_EngineSimple::m_max_power = 530000 / 50;
-const double Object314_EngineSimple::m_max_speed = 10000 / 50;
+const double Object314_EngineSimple::m_max_torque = 5000 / 50;
+const double Object314_EngineSimple::m_max_power = 1000000 / 50;
+const double Object314_EngineSimple::m_max_speed = 20000 / 50;
 
 Object314_EngineSimple::Object314_EngineSimple(const std::string& name) : ChEngineSimple(name) {}
 

@@ -19,8 +19,8 @@ namespace object314 {
 const double Object314_SupportRoller::m_wheel_mass = 0.40;
 const ChVector3d Object314_SupportRoller::m_wheel_inertia(0.00028, 0.00032, 0.00028);
 const double Object314_SupportRoller::m_wheel_radius = 0.04;
-const double Object314_SupportRoller::m_wheel_width = 0.06;
-const double Object314_SupportRoller::m_wheel_gap = 0.1;
+const double Object314_SupportRoller::m_wheel_width = 0.1;
+const double Object314_SupportRoller::m_wheel_gap = 0.21;
 
 const std::string Object314_SupportRollerLeft::m_meshFile = "object314/SupportRoller.obj";
 const std::string Object314_SupportRollerRight::m_meshFile = "object314/SupportRoller.obj";
