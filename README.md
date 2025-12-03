@@ -23,4 +23,4 @@
 
 Деформируемый грунт SMC:
 
-![obstacles](.images/obstacles.gif)
+![obstacles](.images/smc_terrian.gif)
