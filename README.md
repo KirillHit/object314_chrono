@@ -14,13 +14,3 @@
     xhost +local:root
     docker compose up
     ```
-
-# Примеры работы
-
-Работа подвески:
-
-![obstacles](.images/obstacles.gif)
-
-Деформируемый грунт SMC:
-
-![obstacles](.images/smc_terrian.gif)
