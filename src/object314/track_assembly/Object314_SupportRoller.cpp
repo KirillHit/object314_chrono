@@ -1,7 +1,7 @@
 // Object314 road wheel subsystem.
 
 #include "chrono/assets/ChVisualShapeTriangleMesh.h"
-#include "chrono/utils/ChUtilsInputOutput.h"
+#include "chrono/input_output/ChUtilsInputOutput.h"
 
 #include "chrono_vehicle/ChVehicleDataPath.h"
 

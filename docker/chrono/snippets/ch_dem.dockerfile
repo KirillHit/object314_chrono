@@ -1,0 +1,4 @@
+# Chrono::DEM support.
+
+ENV CMAKE_OPTIONS="${CMAKE_OPTIONS} \
+    -DCH_ENABLE_MODULE_DEM=ON"

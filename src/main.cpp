@@ -1,6 +1,6 @@
-#include "chrono/output/ChOutputASCII.h"
+#include "chrono/input_output/ChOutputASCII.h"
+#include "chrono/input_output/ChUtilsInputOutput.h"
 #include "chrono/solver/ChSolverBB.h"
-#include "chrono/utils/ChUtilsInputOutput.h"
 
 #include "chrono_vehicle/ChVehicleDataPath.h"
 #include "chrono_vehicle/driver/ChInteractiveDriver.h"

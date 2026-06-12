@@ -1,0 +1,8 @@
+# Standard ROS2 decencies
+empy==3.3.4
+catkin_pkg
+colcon-common-extensions
+numpy
+lark
+transforms3d
+scipy

@@ -1,4 +1,4 @@
-FROM kirillhit/project_chrono:0.2
+FROM kirillhit/project_chrono:10.0.0
 
 RUN apt update && apt install -y build-essential cmake
 
@@ -7,4 +7,4 @@ COPY ../src .
 
 RUN mkdir -p build \
     && cmake -S . -B build -DCMAKE_BUILD_TYPE=Release \
-    && cmake --build build --target install --parallel 8
+    && cmake --build build --target install --parallel $(nproc)
