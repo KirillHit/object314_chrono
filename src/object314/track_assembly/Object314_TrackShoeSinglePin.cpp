@@ -31,6 +31,14 @@ const ChVector3d Object314_TrackShoeSinglePin::m_pin_center(0.0, 0.0, 0.0);
 // -----------------------------------------------------------------------------
 
 Object314_TrackShoeSinglePin::Object314_TrackShoeSinglePin(const std::string& name) : ChTrackShoeSinglePin(name) {
+    constexpr int pad_material = 0;
+    constexpr int wheel_material = 1;
+
+    constexpr double shoe_half_length = 0.0505;
+    constexpr double shoe_half_width = 0.22;
+    constexpr double bottom_half_height = 0.005;
+    constexpr double top_half_height = 0.01;
+
     // Contact materials
 
     // Material for cylindrical surfaces (sprocket contact)
@@ -59,15 +67,20 @@ Object314_TrackShoeSinglePin::Object314_TrackShoeSinglePin(const std::string& na
     // Geometry
 
     // Collision box: pad bottom (ground contact)
-    utils::ChBodyGeometry::BoxShape box_bottom(ChVector3d(0, 0, 0.0025), QUNIT, ChVector3d(0.0505, 0.22, 0.005), 0);
+    utils::ChBodyGeometry::BoxShape box_bottom(ChVector3d(0, 0, 0.0025), QUNIT,
+                                               ChVector3d(shoe_half_length, shoe_half_width, bottom_half_height),
+                                               pad_material);
 
     // Collision box: pad top (wheel contact)
-    utils::ChBodyGeometry::BoxShape box_top(ChVector3d(0, 0, -0.0025), QUNIT, ChVector3d(0.0505, 0.22, 0.01), 1);
+    utils::ChBodyGeometry::BoxShape box_top(ChVector3d(0, 0, -0.0025), QUNIT,
+                                            ChVector3d(shoe_half_length, shoe_half_width, top_half_height),
+                                            wheel_material);
 
     // Collision box: guide pin (wheel contact)
-    utils::ChBodyGeometry::BoxShape box_guide_1(ChVector3d(0, 0.038, 0.019), QUNIT, ChVector3d(0.018, 0.026, 0.025), 1);
+    utils::ChBodyGeometry::BoxShape box_guide_1(ChVector3d(0, 0.038, 0.019), QUNIT, ChVector3d(0.018, 0.026, 0.025),
+                                                wheel_material);
     utils::ChBodyGeometry::BoxShape box_guide_2(ChVector3d(0, -0.038, 0.019), QUNIT, ChVector3d(0.018, 0.026, 0.025),
-                                                1);
+                                                wheel_material);
 
     m_geometry.coll_boxes.push_back(box_bottom);
     m_geometry.coll_boxes.push_back(box_top);
@@ -82,7 +95,7 @@ Object314_TrackShoeSinglePin::Object314_TrackShoeSinglePin(const std::string& na
     m_geometry.vis_boxes.push_back(box_guide_1);
     m_geometry.vis_boxes.push_back(box_guide_2);
 
-    m_geometry.vis_model_file = GetVehicleDataFile("object314/TrackShoeSinglePin.obj");
+    m_geometry.vis_model_file = GetVehicleDataFile("object314/TrackShoeSinglePin2.obj");
 }
 
 }  // namespace object314

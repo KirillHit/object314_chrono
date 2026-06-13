@@ -22,7 +22,7 @@ const ChVector3d Object314_Idler::m_carrier_inertia(0.002, 0.002, 0.002);
 const double Object314_Idler::m_carrier_radius = 0.0001;
 
 const double Object314_Idler::m_tensioner_l0 = 0.36;
-const double Object314_Idler::m_tensioner_f = 9.81 * 5000.0 / 10.0;  // 10% Weight Force      M113: 2e4;
+const double Object314_Idler::m_tensioner_f = 9.81 * 5000.0 * 0.13;  // 13% Weight Force;
 const double Object314_Idler::m_tensioner_k = 5e4;
 const double Object314_Idler::m_tensioner_c = Object314_Idler::m_tensioner_k * 0.05;
 
