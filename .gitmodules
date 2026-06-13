@@ -1,0 +1,3 @@
+[submodule "third_party/vehicle_nmpc"]
+	path = third_party/vehicle_nmpc
+	url = https://github.com/KirillHit/vehicle_nmpc.git

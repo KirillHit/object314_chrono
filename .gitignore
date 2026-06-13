@@ -4,6 +4,7 @@ NVIDIA-OptiX-SDK*
 .vscode
 build
 pid_error.csv
+AGENTS.md
 
 # Cmake
 
