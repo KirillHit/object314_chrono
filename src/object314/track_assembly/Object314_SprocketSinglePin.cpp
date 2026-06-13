@@ -41,7 +41,7 @@ Object314_SprocketSinglePin::Object314_SprocketSinglePin(const std::string& name
 void Object314_SprocketSinglePin::CreateContactMaterial(ChContactMethod contact_method) {
     ChContactMaterialData minfo;
     minfo.mu = 0.4f;
-    minfo.cr = 0.75f;
+    minfo.cr = 0.0f;
     minfo.Y = 1e8f;
     m_material = minfo.CreateMaterial(contact_method);
 }

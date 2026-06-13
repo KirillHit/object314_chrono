@@ -11,13 +11,13 @@ namespace chrono {
 namespace vehicle {
 namespace object314 {
 
-/// Simple Object314 brake subsystem (torque applied directly to the spindle joint).
+/// Empty brake stub required by Chrono track assembly API. Object314 is controlled by sprocket torques.
 class CH_MODELS_API Object314_BrakeSimple : public ChTrackBrakeSimple {
   public:
     Object314_BrakeSimple(const std::string& name) : ChTrackBrakeSimple(name) {}
     ~Object314_BrakeSimple() {}
 
-    virtual double GetMaxBrakingTorque() override { return 30000.0; }
+    virtual double GetMaxBrakingTorque() override { return 0.0; }
 };
 
 }  // namespace object314

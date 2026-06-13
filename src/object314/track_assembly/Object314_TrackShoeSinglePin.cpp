@@ -35,14 +35,14 @@ Object314_TrackShoeSinglePin::Object314_TrackShoeSinglePin(const std::string& na
 
     // Material for cylindrical surfaces (sprocket contact)
     m_shoe_sprk_minfo.mu = 0.8f;
-    m_shoe_sprk_minfo.cr = 0.75f;
+    m_shoe_sprk_minfo.cr = 0.0f;
     m_shoe_sprk_minfo.Y = 1e8f;
 
     // Material 0: pad bottom (ground contact)
     {
         ChContactMaterialData minfo;
         minfo.mu = 0.8f;
-        minfo.cr = 0.75f;
+        minfo.cr = 0.0f;
         minfo.Y = 1e7f;
         m_geometry.materials.push_back(minfo);
     }
@@ -51,7 +51,7 @@ Object314_TrackShoeSinglePin::Object314_TrackShoeSinglePin(const std::string& na
     {
         ChContactMaterialData minfo;
         minfo.mu = 0.8f;
-        minfo.cr = 0.75f;
+        minfo.cr = 0.0f;
         minfo.Y = 1e7f;
         m_geometry.materials.push_back(minfo);
     }

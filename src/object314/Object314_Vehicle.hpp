@@ -13,22 +13,17 @@ namespace vehicle {
 namespace object314 {
 
 /// Definition of an object314 tracked vehicle with segmented tracks.
-/// Both single-pin and double-pin track assemblies can be used with this vehicle model.
 class CH_MODELS_API Object314_Vehicle : public ChTrackedVehicle {
   public:
     /// Construct the object314 vehicle within an automatically created Chrono system.
     Object314_Vehicle(bool fixed,
                       TrackShoeType shoe_type,
-                      DrivelineTypeTV driveline_type,
-                      BrakeType brake_type,
                       ChContactMethod contact_method = ChContactMethod::NSC,
                       CollisionType chassis_collision_type = CollisionType::NONE);
 
     /// Construct the object314 vehicle within the specified Chrono system.
     Object314_Vehicle(bool fixed,
                       TrackShoeType shoe_type,
-                      DrivelineTypeTV driveline_type,
-                      BrakeType brake_type,
                       ChSystem* system,
                       CollisionType chassis_collision_type = CollisionType::NONE);
 
@@ -41,11 +36,7 @@ class CH_MODELS_API Object314_Vehicle : public ChTrackedVehicle {
     virtual void Initialize(const ChCoordsys<>& chassisPos, double chassisFwdVel = 0) override;
 
   private:
-    void Create(bool fixed,
-                TrackShoeType shoe_type,
-                DrivelineTypeTV driveline_type,
-                BrakeType brake_type,
-                CollisionType chassis_collision_type);
+    void Create(bool fixed, TrackShoeType shoe_type, CollisionType chassis_collision_type);
 
     bool m_create_track;
 };

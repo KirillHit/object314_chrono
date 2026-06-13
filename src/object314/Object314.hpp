@@ -1,5 +1,4 @@
-// Wrapper classes for modeling an entire Object314 vehicle assembly
-// (including the vehicle itself and the powertrain).
+// Wrapper classes for modeling an entire Object314 vehicle assembly.
 
 #ifndef OBJECT314_HPP
 #define OBJECT314_HPP
@@ -32,20 +31,15 @@ class CH_MODELS_API Object314 {
         m_roller_cyl = roller_as_cylinder;
     }
 
-    void SetBrakeType(BrakeType brake_type) { m_brake_type = brake_type; }
-
     void SetInitPosition(const ChCoordsys<>& pos) { m_initPos = pos; }
     void SetInitFwdVel(double fwdVel) { m_initFwdVel = fwdVel; }
 
     void CreateTrack(bool val) { m_create_track = val; }
-    void SetEngineType(EngineModelType val) { m_engineType = val; }
-    void SetTransmissionType(TransmissionModelType val) { m_transmissionType = val; }
 
     ChSystem* GetSystem() const { return m_vehicle->GetSystem(); }
     ChTrackedVehicle& GetVehicle() const { return *m_vehicle; }
     std::shared_ptr<ChChassis> GetChassis() const { return m_vehicle->GetChassis(); }
     std::shared_ptr<ChBodyAuxRef> GetChassisBody() const { return m_vehicle->GetChassisBody(); }
-    std::shared_ptr<ChDrivelineTV> GetDriveline() const { return m_vehicle->GetDriveline(); }
 
     void Initialize();
 
@@ -61,10 +55,9 @@ class CH_MODELS_API Object314 {
     void SetTrackShoeVisualizationType(VisualizationType vis) { m_vehicle->SetTrackShoeVisualizationType(vis); }
 
     void Synchronize(double time, const DriverInputs& driver_inputs);
-    void Synchronize(double time,
-                     const DriverInputs& driver_inputs,
-                     const TerrainForces& shoe_forces_left,
-                     const TerrainForces& shoe_forces_right);
+
+    /// Apply NMPC track torque commands tau_l/tau_r [N m].
+    void ApplyTrackTorques(double left_torque, double right_torque);
     void Advance(double step);
 
     void LogConstraintViolations() { m_vehicle->LogConstraintViolations(); }
@@ -79,11 +72,7 @@ class CH_MODELS_API Object314 {
     bool m_idler_cyl;
     bool m_roller_cyl;
 
-    BrakeType m_brake_type;
     TrackShoeType m_shoe_type;
-    DrivelineTypeTV m_driveline_type;
-    EngineModelType m_engineType;
-    TransmissionModelType m_transmissionType;
 
     ChCoordsys<> m_initPos;
     double m_initFwdVel;

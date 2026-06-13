@@ -32,7 +32,7 @@ Object314_SupportRoller::Object314_SupportRoller(const std::string& name) : ChDo
 void Object314_SupportRoller::CreateContactMaterial(ChContactMethod contact_method) {
     ChContactMaterialData minfo;
     minfo.mu = 0.4f;
-    minfo.cr = 0.75f;
+    minfo.cr = 0.0f;
     minfo.Y = 1e7f;
     m_material = minfo.CreateMaterial(contact_method);
 }

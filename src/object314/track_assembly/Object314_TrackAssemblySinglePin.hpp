@@ -15,7 +15,7 @@ namespace object314 {
 /// Object314 track assembly using single-pin track shoes.
 class CH_MODELS_API Object314_TrackAssemblySinglePin : public ChTrackAssemblySinglePin {
   public:
-    Object314_TrackAssemblySinglePin(VehicleSide side, BrakeType brake_type);
+    Object314_TrackAssemblySinglePin(VehicleSide side);
 
     virtual const ChVector3d GetSprocketLocation() const override;
     virtual const ChVector3d GetIdlerLocation() const override;

@@ -3,10 +3,9 @@ project(object314_robot CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 
-find_package(Chrono 
+find_package(Chrono
   COMPONENTS
     Irrlicht
-    VSG
     Multicore
     Sensor
     Vehicle
@@ -27,18 +26,10 @@ target_link_libraries(object314_teleop
     object314_vehicle
 )
 
-add_executable(object314_pid pid_control.cpp)
-
-target_link_libraries(object314_pid
-  PRIVATE
-    object314_vehicle
-)
-
 install(
   TARGETS
     object314_teleop
-    object314_pid 
-  RUNTIME DESTINATION 
+  RUNTIME DESTINATION
     share/chrono/bin
 )
 

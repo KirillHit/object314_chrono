@@ -1,7 +1,6 @@
 // Object314 single-pin track assembly subsystem.
 
 #include "Object314_TrackAssemblySinglePin.hpp"
-#include "Object314_BrakeShafts.hpp"
 #include "Object314_BrakeSimple.hpp"
 #include "Object314_Idler.hpp"
 #include "Object314_IdlerWheel.hpp"
@@ -41,7 +40,7 @@ const ChVector3d Object314_TrackAssemblySinglePin::m_supp_locs_R[2] = {
 // Constructor for the M113 track assembly using single-pin track shoes.
 // Create the suspensions, idler, brake, sprocket, and track shoes.
 // -----------------------------------------------------------------------------
-Object314_TrackAssemblySinglePin::Object314_TrackAssemblySinglePin(VehicleSide side, BrakeType brake_type)
+Object314_TrackAssemblySinglePin::Object314_TrackAssemblySinglePin(VehicleSide side)
     : ChTrackAssemblySinglePin("", side) {
     size_t num_shoes = 0;
     std::string suspName("Object314_Suspension");
@@ -51,7 +50,7 @@ Object314_TrackAssemblySinglePin::Object314_TrackAssemblySinglePin(VehicleSide s
         case LEFT:
             SetName("Object314_TrackAssemblyLeft");
             m_idler = chrono_types::make_shared<Object314_Idler>("Object314_Idler_Left", side);
-            m_brake = chrono_types::make_shared<Object314_BrakeShafts>("Object314_BrakeLeft");
+            m_brake = chrono_types::make_shared<Object314_BrakeSimple>("Object314_BrakeLeft");
             m_sprocket = chrono_types::make_shared<Object314_SprocketSinglePinLeft>();
             num_shoes = 61;
             suspName += "Left_";
@@ -62,7 +61,7 @@ Object314_TrackAssemblySinglePin::Object314_TrackAssemblySinglePin(VehicleSide s
         case RIGHT:
             SetName("Object314_TrackAssemblyRight");
             m_idler = chrono_types::make_shared<Object314_Idler>("Object314_Idler_Right", side);
-            m_brake = chrono_types::make_shared<Object314_BrakeShafts>("Object314_BrakeRight");
+            m_brake = chrono_types::make_shared<Object314_BrakeSimple>("Object314_BrakeRight");
             m_sprocket = chrono_types::make_shared<Object314_SprocketSinglePinRight>();
             num_shoes = 61;
             suspName += "Right_";

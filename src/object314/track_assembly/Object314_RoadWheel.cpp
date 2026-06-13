@@ -32,7 +32,7 @@ Object314_RoadWheel::Object314_RoadWheel(const std::string& name) : ChDoubleTrac
 void Object314_RoadWheel::CreateContactMaterial(ChContactMethod contact_method) {
     ChContactMaterialData minfo;
     minfo.mu = 0.4f;
-    minfo.cr = 0.75f;
+    minfo.cr = 0.0f;
     minfo.Y = 1e7f;
     m_material = minfo.CreateMaterial(contact_method);
 }
