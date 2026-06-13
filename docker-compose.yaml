@@ -22,4 +22,4 @@ services:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
     stdin_open: true
     tty: true
-    command: bash -c "cd /usr/local/share/chrono/bin && ./object314_teleop"
+    command: bash -c "cd /opt/chrono/install/share/chrono/bin && ./object314_teleop"

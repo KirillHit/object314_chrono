@@ -39,8 +39,8 @@ install(
     object314_teleop
     object314_pid 
   RUNTIME DESTINATION 
-    /usr/local/share/chrono/bin
+    share/chrono/bin
 )
 
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/object314/data/
-        DESTINATION /usr/local/share/chrono/data/vehicle/object314)
+        DESTINATION share/chrono/data/vehicle/object314)

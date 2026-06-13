@@ -2,6 +2,8 @@
 
 #include "Object314_Vehicle.hpp"
 
+#include <stdexcept>
+
 #include "chrono/assets/ChVisualShapeSphere.h"
 #include "chrono/assets/ChVisualShapeTriangleMesh.h"
 #include "chrono/input_output/ChUtilsInputOutput.h"
@@ -56,18 +58,15 @@ void Object314_Vehicle::Create(bool fixed,
         case TrackShoeType::DOUBLE_PIN:
             ////m_tracks[0] = chrono_types::make_shared<Object314_TrackAssemblyDoublePin>(LEFT, brake_type);
             ////m_tracks[1] = chrono_types::make_shared<Object314_TrackAssemblyDoublePin>(RIGHT, brake_type);
-            std::cout << "Unimplemented track assembly model.\n";
-            break;
+            throw std::invalid_argument("Unsupported Object314 track assembly model: DOUBLE_PIN");
         case TrackShoeType::BAND_BUSHING:
             ////m_tracks[0] = chrono_types::make_shared<Object314_TrackAssemblyBandBushing>(LEFT, brake_type);
             ////m_tracks[1] = chrono_types::make_shared<Object314_TrackAssemblyBandBushing>(RIGHT, brake_type);
-            std::cout << "Unimplemented track assembly model.\n";
-            break;
+            throw std::invalid_argument("Unsupported Object314 track assembly model: BAND_BUSHING");
         case TrackShoeType::BAND_ANCF:
             ////m_tracks[0] = chrono_types::make_shared<Object314_TrackAssemblyBandANCF>(LEFT, brake_type);
             ////m_tracks[1] = chrono_types::make_shared<Object314_TrackAssemblyBandANCF>(RIGHT, brake_type);
-            std::cout << "Unimplemented track assembly model.\n";
-            break;
+            throw std::invalid_argument("Unsupported Object314 track assembly model: BAND_ANCF");
     }
 
     // Create the driveline
@@ -77,8 +76,7 @@ void Object314_Vehicle::Create(bool fixed,
             break;
         case DrivelineTypeTV::BDS:
             ////m_driveline = chrono_types::make_shared<Object314_DrivelineBDS>();
-            std::cout << "Unimplemented driveline model.\n";
-            break;
+            throw std::invalid_argument("Unsupported Object314 driveline model: BDS");
     }
 }
 
