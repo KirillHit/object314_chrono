@@ -11,6 +11,8 @@ find_package(Chrono
     Vehicle
 )
 find_package(Eigen3 REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(vehicle_nmpc_interfaces REQUIRED)
 
 if (NOT Chrono_FOUND)
   message("Could not find Chrono or one of its required modules")
@@ -26,9 +28,19 @@ target_link_libraries(object314_teleop
     object314_vehicle
 )
 
+add_executable(object314_ros_sim ros_sim.cpp)
+
+target_link_libraries(object314_ros_sim
+  PRIVATE
+    object314_vehicle
+    rclcpp::rclcpp
+    vehicle_nmpc_interfaces::vehicle_nmpc_interfaces__rosidl_typesupport_cpp
+)
+
 install(
   TARGETS
     object314_teleop
+    object314_ros_sim
   RUNTIME DESTINATION
     share/chrono/bin
 )

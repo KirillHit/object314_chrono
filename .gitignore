@@ -5,6 +5,7 @@ NVIDIA-OptiX-SDK*
 build
 pid_error.csv
 AGENTS.md
+runs
 
 # Cmake
 

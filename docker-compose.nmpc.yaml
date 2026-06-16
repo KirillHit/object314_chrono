@@ -1,0 +1,56 @@
+services:
+  object314_ros_sim:
+    build:
+      context: .
+      dockerfile: docker/object314_chrono.dockerfile
+    image: object314:latest
+    network_mode: host
+    ipc: host
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    environment:
+      - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+      - DISPLAY=${DISPLAY}
+      - XDG_RUNTIME_DIR=/tmp/runtime-root
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    stdin_open: true
+    tty: true
+    command: bash -c "cd /opt/chrono/install/share/chrono/bin && ./object314_ros_sim"
+
+  vehicle_nmpc:
+    build:
+      context: third_party/vehicle_nmpc
+      dockerfile: docker/dockerfile
+    image: vehicle_nmpc:latest
+    network_mode: host
+    ipc: host
+    depends_on:
+      - object314_ros_sim
+    environment:
+      - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+      - MPLBACKEND=Agg
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./third_party/vehicle_nmpc/src/vehicle_nmpc:/workspace/vehicle_nmpc:ro
+      - ./runs:/workspace/runs
+    tty: true
+    stdin_open: true
+    working_dir: /workspace
+    command:
+      - /bin/bash
+      - -lc
+      - >
+        python3 -m vehicle_nmpc.run
+        model=tracked_veh_dynamic
+        sim=ros2
+        sim.params.namespace=/vehicle
+        sim.params.command_mode=track_torque
+        hydra.job_logging.root.level=DEBUG
