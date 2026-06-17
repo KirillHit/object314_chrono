@@ -1,7 +1,12 @@
+#include "chrono/assets/ChVisualShapeSphere.h"
+#include "chrono/collision/ChCollisionShapeSphere.h"
+#include "chrono/physics/ChBody.h"
 #include "chrono/solver/ChSolverBB.h"
 
+#include "chrono_vehicle/ChTerrain.h"
 #include "chrono_vehicle/ChVehicleDataPath.h"
 #include "chrono_vehicle/terrain/RigidTerrain.h"
+#include "chrono_vehicle/terrain/SCMTerrain.h"
 #include "chrono_vehicle/tracked_vehicle/ChTrackedVehicleVisualSystemIrrlicht.h"
 
 #include "object314/Object314.hpp"
@@ -34,8 +39,22 @@ constexpr double kMaxTrackTorque = 250.0;
 constexpr double kDefaultTerrainFriction = 0.9;
 constexpr double kDefaultTerrainRestitution = 0.75;
 constexpr double kDefaultTerrainYoungModulus = 2e7;
-constexpr double kDefaultTopViewHeight = 20.0;
+constexpr double kDefaultTopViewHeight = 10.0;
 constexpr double kRenderStepSize = 1.0 / 60.0;
+constexpr bool kEnableSmcTerrain = true;
+constexpr bool kEnableFixedObstacles = false;
+constexpr double kScmTerrainLength = 14.0;
+constexpr double kScmTerrainWidth = 14.0;
+constexpr double kScmMeshResolution = 0.02;
+constexpr bool kEnableScmBulldozing = true;
+constexpr double kObstacleRadius = 0.2;
+constexpr double kObstacleCenterZ = -0.18;
+constexpr double kObstacleGridStartX = 1.0;
+constexpr double kObstacleGridCenterY = 0.0;
+constexpr double kObstacleGridSpacingX = 1.0;
+constexpr double kObstacleGridSpacingY = 1.0;
+constexpr int kObstacleGridSizeX = 5;
+constexpr int kObstacleGridSizeY = 5;
 const std::string kDefaultRosNamespace = "/vehicle";
 
 struct PlantState {
@@ -64,10 +83,77 @@ std::vector<double> state_to_vector(const PlantState& state) {
     return {state.x, state.y, state.yaw, state.vx, state.vy, state.yaw_rate};
 }
 
+std::unique_ptr<ChTerrain> create_terrain(ChSystem* system) {
+    if constexpr (kEnableSmcTerrain) {
+        auto terrain = std::make_unique<vehicle::SCMTerrain>(system);
+        terrain->SetReferenceFrame(ChCoordsys<>(ChVector3d(0, -0.5, 0), QuatFromAngleX(0)));
+        terrain->Initialize(kScmTerrainLength, kScmTerrainWidth, kScmMeshResolution);
+        terrain->SetSoilParameters(0.82e6,   // Bekker Kphi
+                                   0.14e4,   // Bekker Kc
+                                   1.0,      // Bekker n exponent
+                                   0.017e4,  // Mohr cohesive limit (Pa)
+                                   35,       // Mohr friction limit (degrees)
+                                   1.78e-2,  // Janosi shear coefficient (m)
+                                   2e8,      // Elastic stiffness (Pa/m), before plastic yield, must be > Kphi
+                                   3e4       // Damping (Pa s/m), proportional to negative vertical speed
+        );
+        terrain->EnableBulldozing(kEnableScmBulldozing);
+        terrain->SetBulldozingParameters(55, 1, 5, 6);
+        terrain->SetColormap(ChColormap::Type::COPPER);
+        terrain->SetPlotType(vehicle::SCMTerrain::PLOT_SINKAGE, -0.01, 0.04);
+        terrain->GetMesh()->SetWireframe(true);
+        return terrain;
+    } else {
+        auto terrain = std::make_unique<RigidTerrain>(system);
+        ChContactMaterialData minfo;
+        minfo.mu = kDefaultTerrainFriction;
+        minfo.cr = kDefaultTerrainRestitution;
+        minfo.Y = kDefaultTerrainYoungModulus;
+        auto patch_mat = minfo.CreateMaterial(ChContactMethod::SMC);
+        auto patch = terrain->AddPatch(patch_mat, CSYSNORM, kTerrainLength, kTerrainWidth);
+        patch->SetColor(ChColor(0.5f, 0.8f, 0.5f));
+        patch->SetTexture(GetVehicleDataFile("terrain/textures/grass.jpg"), 20, 20);
+        terrain->Initialize();
+        return terrain;
+    }
+}
+
+void add_fixed_obstacles(ChSystem* system) {
+    ChContactMaterialData minfo;
+    minfo.mu = kDefaultTerrainFriction;
+    minfo.cr = 0.01f;
+    minfo.Y = kDefaultTerrainYoungModulus;
+    auto obstacle_mat = minfo.CreateMaterial(system->GetContactMethod());
+    const double first_y = kObstacleGridCenterY - 0.5 * kObstacleGridSpacingY * (kObstacleGridSizeY - 1);
+
+    for (int ix = 0; ix < kObstacleGridSizeX; ++ix) {
+        for (int iy = 0; iy < kObstacleGridSizeY; ++iy) {
+            auto obstacle = chrono_types::make_shared<ChBody>();
+            obstacle->SetPos(ChVector3d(kObstacleGridStartX + ix * kObstacleGridSpacingX,
+                                        first_y + iy * kObstacleGridSpacingY, kObstacleCenterZ));
+            obstacle->SetFixed(true);
+            obstacle->EnableCollision(true);
+
+            auto vis_shape = chrono_types::make_shared<ChVisualShapeSphere>(kObstacleRadius);
+            vis_shape->SetTexture(GetVehicleDataFile("terrain/textures/tile4.jpg"));
+            obstacle->AddVisualShape(vis_shape);
+
+            auto collision_shape = chrono_types::make_shared<ChCollisionShapeSphere>(obstacle_mat, kObstacleRadius);
+            obstacle->AddCollisionShape(collision_shape);
+
+            system->AddBody(obstacle);
+        }
+    }
+}
+
 double yaw_from_quaternion(const ChQuaternion<>& q) {
     const double sin_yaw = 2.0 * (q.e0() * q.e3() + q.e1() * q.e2());
     const double cos_yaw = 1.0 - 2.0 * (q.e2() * q.e2() + q.e3() * q.e3());
     return std::atan2(sin_yaw, cos_yaw);
+}
+
+double wrap_angle(double angle) {
+    return std::atan2(std::sin(angle), std::cos(angle));
 }
 
 class Object314RosPlant {
@@ -75,7 +161,10 @@ class Object314RosPlant {
     Object314RosPlant() { reset(PlantState{}); }
 
     PlantState reset(const PlantState& requested_state) {
-        vis_.reset();
+        if (vis_) {
+            vis_->GetSystems().clear();
+        }
+
         object314_ = std::make_unique<Object314>();
         object314_->SetContactMethod(ChContactMethod::SMC);
         object314_->SetChassisCollisionType(CollisionType::NONE);
@@ -95,16 +184,10 @@ class Object314RosPlant {
         auto& vehicle = object314_->GetVehicle();
         vehicle.EnableRealtime(false);
 
-        terrain_ = std::make_unique<RigidTerrain>(object314_->GetSystem());
-        ChContactMaterialData minfo;
-        minfo.mu = kDefaultTerrainFriction;
-        minfo.cr = kDefaultTerrainRestitution;
-        minfo.Y = kDefaultTerrainYoungModulus;
-        auto patch_mat = minfo.CreateMaterial(ChContactMethod::SMC);
-        auto patch = terrain_->AddPatch(patch_mat, CSYSNORM, kTerrainLength, kTerrainWidth);
-        patch->SetColor(ChColor(0.5f, 0.8f, 0.5f));
-        patch->SetTexture(GetVehicleDataFile("terrain/textures/grass.jpg"), 20, 20);
-        terrain_->Initialize();
+        terrain_ = create_terrain(object314_->GetSystem());
+        if constexpr (kEnableFixedObstacles) {
+            add_fixed_obstacles(object314_->GetSystem());
+        }
 
         auto solver = chrono_types::make_shared<ChSolverBB>();
         solver->SetMaxIterations(120);
@@ -114,6 +197,8 @@ class Object314RosPlant {
         object314_->GetSystem()->SetMaxPenetrationRecoverySpeed(1.5);
 
         set_chassis_velocity(requested_state);
+        previous_wrapped_yaw_ = yaw_from_quaternion(object314_->GetChassisBody()->GetRot());
+        unwrapped_yaw_ = requested_state.yaw;
         initialize_visualization(requested_state);
         return read_state();
     }
@@ -134,17 +219,20 @@ class Object314RosPlant {
 
     double get_time() const { return object314_->GetSystem()->GetChTime(); }
 
-    PlantState read_state() const {
+    PlantState read_state() {
         const auto chassis_body = object314_->GetChassisBody();
         const auto& frame = chassis_body->GetFrameRefToAbs();
         const ChVector3d local_velocity = frame.TransformDirectionParentToLocal(chassis_body->GetPosDt());
         const ChVector3d local_angular_velocity = chassis_body->GetAngVelLocal();
         const ChVector3d& position = chassis_body->GetPos();
+        const double wrapped_yaw = yaw_from_quaternion(chassis_body->GetRot());
+        unwrapped_yaw_ += wrap_angle(wrapped_yaw - previous_wrapped_yaw_);
+        previous_wrapped_yaw_ = wrapped_yaw;
 
         PlantState state;
         state.x = position.x();
         state.y = position.y();
-        state.yaw = yaw_from_quaternion(chassis_body->GetRot());
+        state.yaw = unwrapped_yaw_;
         state.vx = local_velocity.x();
         state.vy = local_velocity.y();
         state.yaw_rate = local_angular_velocity.z();
@@ -153,15 +241,19 @@ class Object314RosPlant {
 
   private:
     void initialize_visualization(const PlantState& requested_state) {
-        vis_ = chrono_types::make_shared<ChTrackedVehicleVisualSystemIrrlicht>();
-        vis_->SetWindowTitle("Object314 ROS Simulator");
-        vis_->EnableStats(false);
-        vis_->AddCamera(ChVector3d(requested_state.x, requested_state.y, kDefaultTopViewHeight),
-                        ChVector3d(requested_state.x, requested_state.y, 0.0));
-        vis_->Initialize();
-        vis_->AddLightDirectional(60, -90);
-        vis_->AddSkyBox();
+        if (!vis_) {
+            vis_ = chrono_types::make_shared<ChTrackedVehicleVisualSystemIrrlicht>();
+            vis_->SetWindowTitle("Object314 ROS Simulator");
+            vis_->EnableStats(false);
+            vis_->Initialize();
+            vis_->AddLightDirectional(60, -90);
+            vis_->AddSkyBox();
+        }
+
         vis_->AttachVehicle(&object314_->GetVehicle());
+        vis_->SetChaseCameraPosition(ChVector3d(requested_state.x, requested_state.y, kDefaultTopViewHeight),
+                                     ChVector3d(requested_state.x, requested_state.y, 0.0));
+        vis_->Advance(0.0);
 
         next_render_time_ = object314_->GetSystem()->GetChTime();
         render_visualization(object314_->GetSystem()->GetChTime(), DriverInputs{});
@@ -197,6 +289,9 @@ class Object314RosPlant {
         object314_->ApplyTrackTorques(left_torque, right_torque);
         terrain_->Advance(step);
         object314_->Advance(step);
+        if (vis_) {
+            vis_->Advance(step);
+        }
 
         const double new_time = object314_->GetVehicle().GetChTime();
         if (vis_ && new_time + 1e-12 >= next_render_time_) {
@@ -206,9 +301,11 @@ class Object314RosPlant {
     }
 
     std::unique_ptr<Object314> object314_;
-    std::unique_ptr<RigidTerrain> terrain_;
+    std::unique_ptr<ChTerrain> terrain_;
     std::shared_ptr<ChTrackedVehicleVisualSystemIrrlicht> vis_;
     double next_render_time_ = 0.0;
+    double previous_wrapped_yaw_ = 0.0;
+    double unwrapped_yaw_ = 0.0;
 };
 
 class Object314RosSimulatorNode : public rclcpp::Node {
